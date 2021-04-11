@@ -3,9 +3,11 @@ package com.javainuse.step;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -68,6 +70,17 @@ public class Writer implements ItemWriter<BookDAO> {
 		        //float a4Height= PDRectangle.A4.getHeight();
 		        
 		        System.out.println("a4Height   15081991 ------------         " + a4Height);
+		        
+		        StringBuilder nonSymbolBuffer = new StringBuilder();
+		        for (char character : text.toCharArray()) {
+		            if (isCharacterEncodeable(pdfFont, character)) {
+		                nonSymbolBuffer.append(character);
+		            } else {
+		                //handle writing line with symbols...
+		            }
+		        }
+		        
+		        text = nonSymbolBuffer.toString();
 
 			    while (text.length() > 0)
 			    {
@@ -126,7 +139,7 @@ public class Writer implements ItemWriter<BookDAO> {
 			    contentStream.setFont(pdfFont, fontSize);
 			    contentStream.newLineAtOffset(startX, startY);
 			    for (String line: lines)
-			    {
+			    {		    	
 			        contentStream.showText(line);
 			        contentStream.newLineAtOffset(0, -leading);
 			    }
@@ -144,5 +157,19 @@ public class Writer implements ItemWriter<BookDAO> {
 			}
 		}
 	}
+	
+
+	
+	private boolean isCharacterEncodeable (PDType0Font currentFont,char character) throws IOException {
+	    try {
+	    	currentFont.encode(Character.toString(character));
+	        return true;
+	    } catch (IllegalArgumentException iae) {
+	    	System.out.println("Can not render");
+	        return false;
+	    }
+	}
+	
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
 import org.springframework.batch.item.UnexpectedInputException;
 
+import com.aspose.pdf.internal.imaging.internal.Exceptions.TimeoutException;
 import com.javainuse.model.BookDAO;
 
 public class Reader implements ItemReader<BookDAO> {
@@ -20,7 +21,7 @@ public class Reader implements ItemReader<BookDAO> {
 	
 	private String[] bookName = {"Magical", "Toan Tri Doc gia"};
 	
-	private String[] urlClass = {"a.rd_sd-button_item.rd_top-right", "glyphicon glyphicon-chevron-right"};
+	private String[] urlClass = {"a.rd_sd-button_item.rd_top-right", "a.btn.btn-success.btn-chapter-nav#next_chap"};
 	
 	private int count = 0;
 
@@ -34,23 +35,31 @@ public class Reader implements ItemReader<BookDAO> {
 		}
 		
 		StringBuilder book  = new StringBuilder(); 
-		Document doc = Jsoup.connect(messages[count]).get();  
+		Document doc = Jsoup.connect(messages[count]).userAgent("Mozilla").get();  
 
 	    Elements listData =doc.select("p"); 
 	    Element link = doc.select(urlClass[count]).first();
 	    //String url = messages[count] + path;
 	    
 	    while(!path[count].isEmpty()) {
+	    	try {
+	    		doc = Jsoup.connect(messages[count] + path[count]).get();  
+	    	}catch(TimeoutException exception) {
+	    		doc = Jsoup.connect(messages[count] + path[count]).get(); 
+	    	}catch(Exception exception) {
+	    		System.out.println("Do nothing with "+ exception);
+	    	}
 	    	
-	    	doc = Jsoup.connect(messages[count] + path[count]).get();  
 	    	System.out.println("URL   " + messages[count] + path[count]);
 	    	listData =doc.select("p"); 
 		    link = doc.select(urlClass[count]).first();
-		    
+		    System.out.println("urlClass[count] : " + urlClass[count]);
+		    System.out.println("link : " + link);
 		    if(null == link) {
 		    	path[count]  = "";
 		    }else {
 		    	path[count] = link.attr("href");
+		    	System.out.println("URL : " + link.attr("href"));
 		    }
 		    
 	    	
@@ -59,7 +68,7 @@ public class Reader implements ItemReader<BookDAO> {
 		    }
 		    
 		    
-		    //System.out.println("Text : " + book); 
+		   
 	    }
 	   
 		BookDAO bookDAO  = new BookDAO();
