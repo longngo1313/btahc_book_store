@@ -14,14 +14,32 @@ import com.javainuse.model.BookDAO;
 
 public class Reader implements ItemReader<BookDAO> {
 
-	private String[] messages = { "https://ln.hako.re" , "https://truyenchu.vn/"};
+	/*
+	 * private String[] messages = { "https://ln.hako.re" ,
+	 * "https://truyenchu.vn/"};
+	 * 
+	 * 
+	 * private String[] path =
+	 * {"/truyen/5632-magicalexplorer/c76313-chuong-116-cau-chuyen-dang-sau-cuoc-tan-cong-cua-gabby"
+	 * ,
+	 * "/toan-tri-doc-gia/chuong-1-mo-dau-ba-cach-de-song-sot-trong-mot-the-gioi-do-nat"
+	 * };
+	 * 
+	 * private String[] bookName = {"Magical", "Toan Tri Doc gia"};
+	 * 
+	 * private String[] urlClass = {"a.rd_sd-button_item.rd_top-right",
+	 * "a.btn.btn-success.btn-chapter-nav#next_chap"};
+	 */
+	
+	
+	private String[] messages = { "https://ln.hako.re" };
 
 	
-	private String[] path = {"/truyen/5632-magicalexplorer/c76313-chuong-116-cau-chuyen-dang-sau-cuoc-tan-cong-cua-gabby" , "/toan-tri-doc-gia/chuong-1-mo-dau-ba-cach-de-song-sot-trong-mot-the-gioi-do-nat"};
+	private String[] path = {"/truyen/5632-magicalexplorer/c76313-chuong-116-cau-chuyen-dang-sau-cuoc-tan-cong-cua-gabby" };
 	
-	private String[] bookName = {"Magical", "Toan Tri Doc gia"};
+	private String[] bookName = {"Magical"};
 	
-	private String[] urlClass = {"a.rd_sd-button_item.rd_top-right", "a.btn.btn-success.btn-chapter-nav#next_chap"};
+	private String[] urlClass = {"a.rd_sd-button_item.rd_top-right"};
 	
 	private int count = 0;
 
@@ -63,10 +81,14 @@ public class Reader implements ItemReader<BookDAO> {
 		    }
 		    
 	    	
-		    for(Element element : listData) {
-		    	book.append(element.text());	    	
-		    }
-		    
+			
+			for(Element element : listData) { 
+				book.append(" line_break " + element.text());
+			}
+			
+			/*
+			 * for(Element element : listData) { book.append(element.text()); }
+			 */
 		    
 		   
 	    }
